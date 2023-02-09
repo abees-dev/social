@@ -1,4 +1,4 @@
-name: nestjs-service
+name: social-client
 on:
   push:
     tags:
