@@ -1,0 +1,2 @@
+const uploadIllustrator = '';
+export { uploadIllustrator };
