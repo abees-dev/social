@@ -20,7 +20,10 @@ export const getPost = async (query?: QueryInput): Promise<IPostResponse[]> => {
   const response: AxiosResponse<IBaseResponse<IPostResponse[]>> = await axiosInstance({
     method: 'get',
     url: '/post',
-    params: query,
+    params: {
+      ...query,
+      user_id: '',
+    },
   });
   if (response.data.status == HttpStatus.OK) {
     return response.data.data;
