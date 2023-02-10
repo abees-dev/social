@@ -11,6 +11,8 @@ import { AddIcon, VisibilityIcon } from 'src/components/icons';
 import MessageItem from 'src/sections/conversation/MessageItem';
 import { Virtuoso } from 'react-virtuoso';
 import ScrollBar from 'src/components/ScrollBar';
+import { IUserResponse } from 'src/interface/UserReponse';
+import { useAppSelector } from 'src/redux/hooks';
 
 const RootStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(1),
@@ -29,12 +31,14 @@ const ContentStyle = styled('div')(({ theme }) => ({
 }));
 
 function Sticker() {
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
+
   const [page, setPage] = React.useState(1);
   const [isNextPage, setIsNextPage] = useState(true);
 
   const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery(
     ['sticker-store'],
-    ({ pageParam }) => getStickerPackages(page),
+    ({ pageParam }) => getStickerPackages(page, user._id),
     {
       getNextPageParam: (lastPage) => page + 1,
       onSuccess: (data) => {
@@ -141,9 +145,15 @@ interface IStickerPackageItem {
 }
 
 function StickerPackageItem({ packageId }: IStickerPackageItem) {
-  const { data, isLoading } = useQuery(['sticker-package-info', { packageId }], () => getStickerPackageInfo(packageId), {
-    enabled: !!packageId,
-  });
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
+
+  const { data, isLoading } = useQuery(
+    ['sticker-package-info', { packageId }],
+    () => getStickerPackageInfo(packageId, user._id),
+    {
+      enabled: !!packageId,
+    }
+  );
 
   return (
     <Grid2 container sx={{ width: '100%' }} spacing={2}>

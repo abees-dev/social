@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { onMessage } from 'firebase/messaging';
-import { messaging } from 'src/utils/firebase';
 import { Alert, Snackbar, styled, Typography } from '@mui/material';
 import AvatarUpload from 'src/components/AvatarUpload';
+import { getListMessage } from 'src/api/nestjs.message';
+import { getMessagingFireBase } from 'src/utils/firebase';
 
 const MessageRootStyled = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -28,13 +29,15 @@ function NotificationFirebase() {
   useEffect(() => {
     console.log('Message listing');
 
-    console.log(payload);
-
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      setPayload(payload.data);
-      setOpen(true);
-      // ...
+    getMessagingFireBase().then((messaging) => {
+      if (messaging) {
+        onMessage(messaging, (payload) => {
+          console.log('Message received. ', payload);
+          setPayload(payload.data);
+          setOpen(true);
+          // ...
+        });
+      }
     });
   }, []);
 

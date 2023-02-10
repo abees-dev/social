@@ -19,6 +19,7 @@ import Popover from 'src/components/Popover';
 import ScrollBar from 'src/components/ScrollBar';
 import useTabs from 'src/hooks/useTabs';
 import { ISticker, IStickerStoreResponse } from 'src/interface/StickerResponse';
+import { IUserResponse } from 'src/interface/UserReponse';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { closeModal, openModal } from 'src/redux/slice/modal.slice';
 import StickerStore from 'src/sections/conversation/StickerStore';
@@ -64,6 +65,7 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const modal = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
 
   const [currenTabs, onChangeTabs] = useTabs(0);
 
@@ -91,9 +93,13 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
     setAnchorEl(null);
   };
 
-  const { data: stickerPackageQuery, isLoading } = useQuery(['stickerPackageUser'], () => getStickerPackagesUser(), {
-    enabled: Boolean(anchorEl),
-  });
+  const { data: stickerPackageQuery, isLoading } = useQuery(
+    ['stickerPackageUser'],
+    () => getStickerPackagesUser(user._id),
+    {
+      enabled: Boolean(anchorEl),
+    }
+  );
 
   const handleOpenModal = () => {
     dispatch(openModal('sticker-store'));
@@ -101,6 +107,8 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
   const handleCloseModal = () => {
     dispatch(closeModal('sticker-store'));
   };
+
+  console.log(stickerPackageQuery);
 
   return (
     <div>
@@ -123,7 +131,7 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
           <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
             <Tabs value={currenTabs} onChange={onChangeTabs} variant="scrollable">
               {!isLoading &&
-                [...stickerPackageUser, ...stickerPackageQuery!.packageList]?.map((item) => (
+                [...stickerPackageUser, ...(stickerPackageQuery?.packageList || [])]?.map((item) => (
                   <Tab
                     disableFocusRipple
                     key={item.packageId}
@@ -154,7 +162,7 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
             <ScrollBar sx={{ height: '100%' }}>
               {!isLoading &&
                 !isEmpty(stickerPackageQuery) &&
-                [...stickerPackageUser, ...stickerPackageQuery?.packageList].map(
+                [...stickerPackageUser, ...(stickerPackageQuery?.packageList || [])].map(
                   (item) =>
                     item.packageId == currenTabs && (
                       <StickerPackageItem
@@ -184,19 +192,21 @@ interface IStickerPackageItem {
 }
 
 function StickerPackageItem({ packageId, open, conversationId }: IStickerPackageItem) {
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
+
   const { data, isLoading } = useQuery(
     ['sticker-package-info', { packageId }],
-    () => getStickerPackageInfo(packageId),
+    () => getStickerPackageInfo(packageId, user._id),
     {
       enabled: !!packageId && packageId !== 0 && open,
     }
   );
 
-  const { data: recentStickerQuery } = useQuery(['recentSticker'], () => getRecentlyStickerPackages(), {
+  const { data: recentStickerQuery } = useQuery(['recentSticker'], () => getRecentlyStickerPackages(user._id), {
     enabled: open && packageId == 0,
   });
 
-  const { mutate: addStickerToChat } = useMutation((stickerId: number) => registerRecentSticker(stickerId), {
+  const { mutate: addStickerToChat } = useMutation((stickerId: number) => registerRecentSticker(stickerId, user._id), {
     onSuccess: (data) => {
       console.log('data', data);
     },

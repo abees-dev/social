@@ -18,13 +18,6 @@ const RootStyle = styled('div')(({ theme }) => ({
 function RightNavBar() {
   const user = useAppSelector((state) => state.auth.user);
 
-  const { data: suggestFriend } = useQuery(['SUGGEST_FRIEND', { limit: 3 }], () =>
-    getSuggestions({
-      limit: 3,
-    })
-  );
-  console.log(suggestFriend);
-
   return (
     <RootStyle>
       <Suggestions />

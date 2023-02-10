@@ -189,10 +189,6 @@ const ConversationPopupItem = forwardRef(({ conversationId }: ConversationPopupI
         data={flatten(listMessage?.pages).reverse()}
         totalCount={flatten(listMessage?.pages).length}
         initialTopMostItemIndex={flatten(listMessage?.pages).length - 1}
-        totalListHeightChanged={(totalHeight) => {
-          console.log('totalHeight', refVirtuoso.current);
-          refVirtuoso.current?.autoscrollToBottom();
-        }}
         itemContent={(index, message) => (
           <MessageItem
             key={message._id}

@@ -3,6 +3,7 @@ import { createBrowserRouter, useRoutes } from 'react-router-dom';
 import GuestGuard from 'src/guards/GuestGuard';
 import Layout from 'src/layouts';
 import Friend from 'src/layouts/friend';
+import NotFound from 'src/pages/Page404';
 import Sticker from 'src/pages/sticker/Sticker';
 // import Layout from 'src/layouts';
 
@@ -95,5 +96,10 @@ export const router = createBrowserRouter([
       },
       { path: 'profile/:id', element: <Profile /> },
     ],
+  },
+  {
+    path: '*',
+    errorElement: <NotFound />,
+    element: <NotFound />,
   },
 ]);

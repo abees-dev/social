@@ -10,6 +10,7 @@ import ProgressBar, { ProgressBarStyle } from './components/ProgressBar';
 import { router } from './routes';
 import OffsetTop from 'src/components/OffsetTop';
 import NotificationFirebase from 'src/components/NotificationFirebase';
+import NotFound from './pages/Page404';
 function App() {
   const [queryClient] = useState(
     () =>

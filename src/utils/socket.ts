@@ -3,7 +3,7 @@ import { IMessageBody } from 'src/interface/MesssageReponse';
 
 const local = localStorage.getItem('redux-user');
 
-const socket = io(String('https://api.abeesdev.com'), {
+const socket = io(String('http://localhost:8080'), {
   transports: ['websocket'],
   auth: {
     token: local ? JSON.parse(JSON.parse(local || '{}')?.accessToken) : '',

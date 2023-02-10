@@ -14,12 +14,6 @@ export default function Profile() {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
-  // useQuery(['PROFILE_USER', { user_id: user.id }], () => getProfile(user.id), {
-  //   onSuccess() {
-  //     dispatch(setEnable('profile'));
-  //   },
-  // });
-
   return (
     <Container maxWidth="lg">
       <ProfileThumbnail />

@@ -12,12 +12,12 @@ const axiosInstance = axios.create({
   },
 });
 
-export const getStickerPackages = async (page: number) => {
+export const getStickerPackages = async (page: number, userId: string) => {
   const res: AxiosResponse<IStickerPackageResponse> = await axiosInstance({
     method: 'GET',
     url: '/package',
     params: {
-      userId: 'abeesdevjs@gmail.com',
+      userId: userId,
       limit: 20,
       pageNumber: page,
       language: 'vie',
@@ -26,35 +26,34 @@ export const getStickerPackages = async (page: number) => {
   return res.data.body.packageList;
 };
 
-export const getStickerPackagesUser = async (page?: number) => {
+export const getStickerPackagesUser = async (userId: string, page?: number) => {
   const res: AxiosResponse<IStickerPackageResponse> = await axiosInstance({
     method: 'GET',
-    url: '/mysticker/abeesdevjs@gmail.com',
+    url: `/mysticker/${userId}`,
     params: {
       limit: 20,
       pageNumber: page || 1,
     },
   });
 
-  console.log(res);
   return res.data.body;
 };
 
-export const getRecentlyStickerPackages = async () => {
+export const getRecentlyStickerPackages = async (userId: string) => {
   const res: AxiosResponse<IStickerRecentResponse> = await axiosInstance({
     method: 'GET',
-    url: 'package/send/abeesdevjs@gmail.com',
+    url: `package/send/${userId}`,
   });
 
   return res.data.body;
 };
 
-export const downLoadStickPackage = async (packageId: number) => {
+export const downLoadStickPackage = async (packageId: number, userId: string) => {
   const res: AxiosResponse<IStickerPackageInfoResponse> = await axiosInstance({
     method: 'POST',
     url: `/download/${packageId}`,
     params: {
-      userId: 'abeesdevjs@gmail.com',
+      userId: userId,
       isPurchase: 'N',
     },
   });
@@ -63,24 +62,24 @@ export const downLoadStickPackage = async (packageId: number) => {
   return res.data;
 };
 
-export const getStickerPackageInfo = async (packageId: number) => {
+export const getStickerPackageInfo = async (packageId: number, userId: string) => {
   const res: AxiosResponse<IStickerPackageInfoResponse> = await axiosInstance({
     method: 'GET',
     url: `/package/${packageId}`,
     params: {
-      userId: 'abeesdevjs@gmail.com',
+      userId: userId,
     },
   });
 
   return res.data.body;
 };
 
-export const registerRecentSticker = async (stickerId: number) => {
+export const registerRecentSticker = async (stickerId: number, userId: string) => {
   const res: AxiosResponse<IStickerPackageInfoResponse> = await axiosInstance({
     method: 'POST',
     url: `analytics/send/${stickerId}`,
     params: {
-      userId: 'abeesdevjs@gmail.com',
+      userId: userId,
     },
   });
   return res.data;

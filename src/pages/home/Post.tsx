@@ -111,9 +111,11 @@ export default function PostPage() {
   return (
     <Page title="Post">
       <Grid2 container spacing={4}>
-        <Grid2 lg={2.5} display={{ lg: 'block', md: 'none', sm: 'none', xs: 'none' }}></Grid2>
+        {!hashUrl && (
+          <Grid2 lg={2.5} display={{ lg: hashUrl ? 'none' : 'block', md: 'none', sm: 'none', xs: 'none' }}></Grid2>
+        )}
 
-        <Grid2 lg={7} md={9} sm={12} xs={12}>
+        <Grid2 lg={hashUrl ? 12 : 7} md={hashUrl ? 12 : 9} sm={12} xs={12}>
           <ContainerStyle>
             <PostCreate handleSuccess={handleSuccess} open={open} handleClose={handleClose} handleOpen={handleOpen} />
 
@@ -138,17 +140,19 @@ export default function PostPage() {
           </ContainerStyle>
         </Grid2>
 
-        <GridStyled
-          xs={2}
-          lg={2.5}
-          md={3}
-          display={{ lg: 'block', md: 'block', sm: 'none', xs: 'none' }}
-          isOffset={isOffset}
-        >
-          <ScrollBar>
-            <RightNavBar />
-          </ScrollBar>
-        </GridStyled>
+        {!hashUrl && (
+          <GridStyled
+            xs={2}
+            lg={2.5}
+            md={3}
+            display={{ lg: hashUrl ? 'none' : 'block', md: 'block', sm: 'none', xs: 'none' }}
+            isOffset={isOffset}
+          >
+            <ScrollBar>
+              <RightNavBar />
+            </ScrollBar>
+          </GridStyled>
+        )}
       </Grid2>
     </Page>
   );

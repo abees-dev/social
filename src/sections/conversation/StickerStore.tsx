@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { InfiniteData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { downLoadStickPackage, getStickerPackageInfo, getStickerPackages } from 'src/api/sticker.api';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { Box, Card, CardMedia, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
@@ -11,6 +11,9 @@ import { AddIcon, VisibilityIcon } from 'src/components/icons';
 import MessageItem from 'src/sections/conversation/MessageItem';
 import { Virtuoso } from 'react-virtuoso';
 import ScrollBar from 'src/components/ScrollBar';
+import { useAppSelector } from 'src/redux/hooks';
+import { IUserResponse } from 'src/interface/UserReponse';
+import { IStickerStoreResponse } from 'src/interface/StickerResponse';
 
 const RootStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(1),
@@ -29,10 +32,11 @@ const ContentStyle = styled('div')(({ theme }) => ({}));
 function StickerStore() {
   const [page, setPage] = useState(1);
   const [isNextPage, setIsNextPage] = useState(true);
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
 
   const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery(
     ['sticker-store'],
-    ({ pageParam }) => getStickerPackages(page),
+    ({ pageParam }) => getStickerPackages(page, user._id),
     {
       getNextPageParam: (lastPage) => page + 1,
       onSuccess: (data) => {
@@ -53,9 +57,13 @@ function StickerStore() {
     }
   }, [inView]);
 
-  const { mutate } = useMutation((packageId: number) => downLoadStickPackage(packageId), {
-    onSuccess: (data) => {
-      console.log(data);
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation((packageId: number) => downLoadStickPackage(packageId, user._id), {
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['sticker-store']);
+
+      queryClient.invalidateQueries(['stickerPackageUser']);
     },
   });
 
@@ -148,9 +156,10 @@ interface IStickerPackageItem {
 }
 
 function StickerPackageItem({ packageId }: IStickerPackageItem) {
+  const user = useAppSelector((state) => state.auth.user) as IUserResponse;
   const { data, isLoading } = useQuery(
     ['sticker-package-info', { packageId }],
-    () => getStickerPackageInfo(packageId),
+    () => getStickerPackageInfo(packageId, user._id),
     {
       enabled: !!packageId,
     }

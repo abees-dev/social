@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, styled } from '@mui/material';
-import { useAppSelector } from 'src/redux/hooks';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { IUserResponse } from 'src/interface/UserReponse';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import socket from 'src/utils/socket';
@@ -8,6 +8,7 @@ import ConversationPopupItem from 'src/sections/conversation/ConversationPopupIt
 import { IMessageResponse } from 'src/interface/MesssageReponse';
 import { VirtuosoHandle } from 'react-virtuoso';
 import { flatten } from 'lodash';
+import { addConversationId } from 'src/redux/slice/conversationPopup.slice';
 
 const ConversationPopupStyle = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -28,6 +29,7 @@ function ConversationPopup() {
   const user = useAppSelector((state) => state.auth.user) as IUserResponse;
   const queryClient = useQueryClient();
   const ref = useRef<IRefScroll>();
+  const dispatch = useAppDispatch();
 
   const handleSetMessage = (data: IMessageResponse) => {
     queryClient.setQueryData<InfiniteData<IMessageResponse[]>>(
@@ -52,28 +54,24 @@ function ConversationPopup() {
   useEffect(() => {
     socket.on('message_text', (data: IMessageResponse) => {
       handleSetMessage(data);
-      ref.current!.scrollBottom();
     });
 
     socket.on('message_image', (data: IMessageResponse) => {
-      console.log('message_image', data);
-
       handleSetMessage(data);
-      ref.current!.scrollBottom();
     });
 
     socket.on('message_video', (data: IMessageResponse) => {
-      console.log('messagevideo', data);
-
       handleSetMessage(data);
-      ref.current!.scrollBottom();
+    });
+
+    socket.on('last_message', (data: IMessageResponse) => {
+      dispatch(addConversationId(data.conversation_id));
     });
 
     socket.on('message_sticker', (data: IMessageResponse) => {
       console.log('message_sticker', data);
 
       handleSetMessage(data);
-      ref.current!.scrollBottom();
     });
   }, []);
 
