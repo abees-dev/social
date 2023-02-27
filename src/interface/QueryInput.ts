@@ -12,6 +12,10 @@ export interface FeelingQueryInput extends QueryInput {
   order?: string;
 }
 
-export type FriendQueryInput = QueryInput
+export interface ConversationQueryInput extends QueryInput {
+  order?: string;
+}
 
-export type MessageQueryInput = QueryInput
+export type FriendQueryInput = QueryInput;
+export type MessageQueryInput = QueryInput;
+export type NotificationQueryInput = QueryInput;

@@ -21,6 +21,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import ChatIcon from '@mui/icons-material/Chat';
 export {
   NotificationsIcon,
   SettingsIcon,
@@ -45,4 +46,5 @@ export {
   VisibilityIcon,
   AccessTimeIcon,
   StorefrontIcon,
+  ChatIcon,
 };

@@ -1,3 +1,5 @@
+import { IMessageResponse } from 'src/interface/MesssageReponse';
+
 export interface CreateConversationBody {
   members: string[];
 }
@@ -10,7 +12,7 @@ export interface IConversationResponse {
   _id: string;
   avatar: string;
   description: string;
-  last_message: string;
+  last_message: IMessageResponse;
   thumbnail: string;
   name: string;
   status: number;
@@ -22,6 +24,11 @@ export interface IConversationResponse {
   updatedAt: string;
   permission: number;
   setting: ISettingConversation;
+
+  user_id: string;
+
+  position: number;
+  no_of_not_seen: number;
 }
 
 export interface ISettingConversation {
@@ -33,4 +40,8 @@ export interface ISettingConversation {
   is_pin_message: number;
   is_remove_member: number;
   is_send_message: number;
+}
+
+export interface ICountUnreadResponse {
+  no_of_unread_message: number;
 }

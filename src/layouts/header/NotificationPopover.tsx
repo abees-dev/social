@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { capitalCase } from 'change-case';
-import { isEmpty } from 'lodash';
+import { capitalize, flatten, isEmpty } from 'lodash';
 import { MouseEvent, useState } from 'react';
 import IconButtonAnimate from 'src/components/animate/IconButtonAnimate';
 import Iconify from 'src/components/Iconify';
@@ -21,18 +21,45 @@ import { NotificationsIcon } from 'src/components/icons';
 import Popover from 'src/components/Popover';
 import NotificationSkeleton from 'src/components/skeleton/NotificationSkeleton';
 import TextMaxLine from 'src/components/TextMaxLine';
+import { useAppSelector } from 'src/redux/hooks';
 
 import { NotificationQueryResponse } from 'src/types/Response';
 import { fDistanceToNow } from 'src/utils/formatTime';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getNotification } from 'src/api/nestjs.notification';
 
 const NotificationPopover = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  // const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // const { push } = useRouter();
-
-  // const [ref, inView] = useInView();
+  const { isLoading, fetchNextPage, hasNextPage, data } = useInfiniteQuery(
+    [
+      'NOTIFICATION',
+      {
+        user_id: user?._id,
+      },
+    ],
+    async ({ pageParam }) =>
+      getNotification({
+        limit: 10,
+        position: pageParam,
+      }),
+    {
+      getNextPageParam: (lastPage) => {
+        if (lastPage?.length === 10) {
+          return lastPage?.[lastPage?.length - 1]?.position;
+        }
+        return false;
+      },
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
 
   const handleOpenPopover = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -62,21 +89,23 @@ const NotificationPopover = () => {
         </Stack>
         <Divider sx={{ borderStyle: 'dashed' }} />
         <List disablePadding>
-          {!isEmpty([]) ? (
-            []?.map((notification, index) => {
-              return (
-                <ListItemButton key={index} sx={{ ...(!index && { bgcolor: (theme) => theme.palette.divider }) }}>
-                  <ListItemAvatar></ListItemAvatar>
+          {!isLoading ? (
+            flatten(data?.pages)?.map((notification, index) => (
+              <ListItemButton key={index} selected={notification.is_read == 0}>
+                <ListItemAvatar>
+                  <Avatar alt={notification?.name} src={notification?.avatar} />
+                </ListItemAvatar>
 
-                  <ListItemText>
-                    <TextMaxLine line={2} variant="subtitle2">
-                      <Typography variant="body2" component="span" ml={0.5}></Typography>
-                    </TextMaxLine>
-                    <Typography variant="caption"></Typography>
-                  </ListItemText>
-                </ListItemButton>
-              );
-            })
+                <ListItemText>
+                  <TextMaxLine variant="subtitle2">
+                    <Typography variant="body2" component="span" ml={0.5}>
+                      {capitalize(notification.title)}
+                    </Typography>
+                  </TextMaxLine>
+                  <Typography variant="caption" ml={0.5}>{`${notification.name} ${notification.content}`}</Typography>
+                </ListItemText>
+              </ListItemButton>
+            ))
           ) : (
             <NotificationSkeleton sx={{ px: 2, py: 1 }} />
           )}

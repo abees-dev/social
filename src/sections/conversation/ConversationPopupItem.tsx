@@ -127,18 +127,19 @@ const ConversationPopupItem = forwardRef(({ conversationId }: ConversationPopupI
     }
   );
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      scrollBottom() {
-        if (refVirtuoso.current) {
-          console.log('scrollBottom');
-          // refVirtuoso.current.autoscrollToBottom();
-        }
-      },
-    }),
-    []
-  );
+  // useImperativeHandle(
+  //   ref,
+  //   () => ({
+  //     scrollBottom() {
+  //       if (refVirtuoso.current) {
+  //         // refVirtuoso.current.scrollToIndex({
+  //         //   index: flatten(listMessage?.pages).length - 1,
+  //         // })
+  //       }
+  //     },
+  //   }),
+  //   []
+  // );
 
   return (
     <RootStyle>
@@ -189,6 +190,11 @@ const ConversationPopupItem = forwardRef(({ conversationId }: ConversationPopupI
         data={flatten(listMessage?.pages).reverse()}
         totalCount={flatten(listMessage?.pages).length}
         initialTopMostItemIndex={flatten(listMessage?.pages).length - 1}
+        atBottomStateChange={(isAtBottom) => {
+          refVirtuoso.current?.scrollToIndex({
+            index: flatten(listMessage?.pages).length - 1,
+          });
+        }}
         itemContent={(index, message) => (
           <MessageItem
             key={message._id}

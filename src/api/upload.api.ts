@@ -3,7 +3,7 @@ import { IBaseResponse } from 'src/interface/BaseResponse';
 import { Upload } from 'src/types/UploadResponse';
 
 export const uploadSingle = async (data: FormData): Promise<IBaseResponse<Upload>> => {
-  const res = await axios({
+  const res: AxiosResponse<IBaseResponse<Upload>> = await axios({
     method: 'POST',
     url: `${process.env.REACT_APP_UPLOAD_API_URL}/upload/single`,
     headers: {
@@ -11,7 +11,6 @@ export const uploadSingle = async (data: FormData): Promise<IBaseResponse<Upload
     },
     data: data,
   });
-
   return res.data;
 };
 

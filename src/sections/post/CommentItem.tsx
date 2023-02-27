@@ -134,7 +134,7 @@ export const CommentItemRoot = forwardRef(({ comment, isReply, onOpenReply }: Co
             {comment.media ? (
               <CardMediaStyled component="img" src={`${process.env.REACT_APP_UPLOAD_API_URL}${comment.media.url}`} />
             ) : (
-              <Typography variant="body2" sx={{ lineHeight: (theme) => theme.typography.caption.lineHeight }}>
+              <Typography variant="body2" sx={{ lineHeight: (theme) => theme.typography.caption.lineHeight, wordBreak: "break-word", }}>
                 {comment.content}
               </Typography>
             )}

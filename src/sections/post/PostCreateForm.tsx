@@ -116,9 +116,7 @@ export default function PostCreateForm() {
     dispatch(openModal(value));
   };
 
-  const handleChangeView = (value: number) => {
-    setValue('view', value);
-  };
+ 
   //
   const handleSetValue = (key: keyof PostValues, value: any) => setValue(key, value);
   const handleClose = (value: string) => {

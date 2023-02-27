@@ -124,7 +124,7 @@ function PostTagUserDialog({ open, onClose, setValues }: IPostTagUserProps) {
   const handleSuccess = () => {
     setValues(
       'tag',
-      userTag.map((item) => item._id)
+      userTag.map((item) => item.user._id)
     );
     dispatch(addTagState(userTag));
 

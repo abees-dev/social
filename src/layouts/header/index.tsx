@@ -20,6 +20,7 @@ import { useAppSelector } from 'src/redux/hooks';
 import { PATH_FRIEND, PATH_PAGE } from 'src/routes/path';
 import AccountPopover from './AccountPopover';
 import NotificationPopover from './NotificationPopover';
+import ConversationPopover from 'src/layouts/header/ConversationPopover';
 
 interface AppBarProps {
   isCollapse: boolean;
@@ -128,6 +129,7 @@ export default function Header({ variants = 'main' }: HeaderProps) {
             }}
           >
             <NotificationPopover />
+            <ConversationPopover />
             <IconButton onClick={onToggleMode}>{isLight ? <DarkModeIcon /> : <LightModeIcon />}</IconButton>
             <IconButton>
               <SettingsIcon />

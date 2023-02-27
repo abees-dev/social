@@ -108,8 +108,6 @@ function StickerPopover({ conversationId }: IStickerPopoverProp) {
     dispatch(closeModal('sticker-store'));
   };
 
-  console.log(stickerPackageQuery);
-
   return (
     <div>
       <IconStyled onClick={handleOpenPopover}>
@@ -206,11 +204,7 @@ function StickerPackageItem({ packageId, open, conversationId }: IStickerPackage
     enabled: open && packageId == 0,
   });
 
-  const { mutate: addStickerToChat } = useMutation((stickerId: number) => registerRecentSticker(stickerId, user._id), {
-    onSuccess: (data) => {
-      console.log('data', data);
-    },
-  });
+  const { mutate: addStickerToChat } = useMutation((stickerId: number) => registerRecentSticker(stickerId, user._id));
 
   const handleAddStickerToChat = (sticker: ISticker) => {
     addStickerToChat(sticker.stickerId);
@@ -237,8 +231,8 @@ function StickerPackageItem({ packageId, open, conversationId }: IStickerPackage
         ))}
       {packageId == 0 && (
         <Grid2 container spacing={2}>
-          {recentStickerQuery?.stickerList?.map((item) => (
-            <GridItemStyled xs={3} key={item.packageId} onClick={() => handleAddStickerToChat(item)}>
+          {recentStickerQuery?.stickerList?.map((item, index) => (
+            <GridItemStyled xs={3} key={index} onClick={() => handleAddStickerToChat(item)}>
               <Image src={item.stickerImg} alt="" />
             </GridItemStyled>
           ))}

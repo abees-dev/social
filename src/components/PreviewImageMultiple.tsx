@@ -16,7 +16,6 @@ interface MasonryProps {
 const MasonryStyled = styled(Masonry, {
   shouldForwardProp: (prop) => prop !== 'length',
 })<MasonryProps>(({ theme, length }) => ({
-  // height: 'calc(100% + 1px)',
   '& :nth-of-type(3)': {
     position: 'relative',
     ...(length > 0 && {

@@ -20,7 +20,6 @@ const ConversationPopupStyle = styled('div')(({ theme }) => ({
 }));
 
 interface IRefScroll {
-  log?: () => void;
   scrollBottom: () => void;
 }
 
@@ -69,8 +68,6 @@ function ConversationPopup() {
     });
 
     socket.on('message_sticker', (data: IMessageResponse) => {
-      console.log('message_sticker', data);
-
       handleSetMessage(data);
     });
   }, []);
