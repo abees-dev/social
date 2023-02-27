@@ -1,4 +1,4 @@
-REACT_APP_API_URL=https://gateway.abeesdev.com/api/v1
-REACT_APP_SOCKET_URL=https://gateway.abeesdev.com
+REACT_APP_API_URL=https://api.abeesdev.com/api/v1
+REACT_APP_SOCKET_URL=https://api.abeesdev.com
 REACT_APP_UPLOAD_API_URL=https://upload.abeesdev.com
 REACT_APP_NESTED_LEVEL=3
